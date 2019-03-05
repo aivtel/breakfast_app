@@ -1,0 +1,35 @@
+<% include ../partials/header %>
+
+<div class="container">
+    
+    <section id="header" class="jumbotron text-center">
+        <h1 id="imagelogo" class="display-4">Breakfasts</h1>
+        <p id="p-logo" class="display-5">Breakfasts all over the world</p>
+        <a class="btn btn-warning btn-lg" href="/breakfasts/new">Add New Breakfast!</a>
+    </section>
+    
+
+    <section id="gallery">
+        <div class="container">
+            <div class="row text-center"> 
+            <% breakfasts.forEach((breakfast) => { %>
+                <div class="col-lg-4 col-md-6 mb-4 d-flex">
+                    <div class="card" style="width: 100%">
+                        <img src="<%= breakfast.image %>" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= breakfast.name %></h5>
+                                <% if(breakfast.description.length < 100) { %>
+                                <p class="card-text"><%= breakfast.description %></p>
+                                <% } else { %>
+                                <p class="card-text"><%= breakfast.description.substring(0, 100) %>...</p>
+                                <% } %>
+                                <a href="/breakfasts/<%= breakfast._id %>" class="btn btn-outline-success btn-sm">More info</a>
+                            </div>
+                    </div>
+                </div>      
+                <% }); %>          
+            </div>
+        </div>
+    </section>
+
+<% include ../partials/footer %>

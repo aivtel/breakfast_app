@@ -1,0 +1,92 @@
+<% include ../partials/header %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+      <div id='map' style='width: auto; height: 300px;'></div>
+      <script>
+      
+        var post = <%- JSON.stringify(breakfast) %>;
+          mapboxgl.accessToken = '************';
+          var map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/light-v10',
+          center: post.coordinates,
+          zoom: 3
+              });
+              
+            // create a HTML element for feature
+            var el = document.createElement('div');
+            el.className = 'marker';
+          
+            // make a marker for feature and add to the map
+            new mapboxgl.Marker(el)
+              .setLngLat(post.coordinates)
+              .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+              .setHTML('<h3>' + post.title + '</h3><p>' + post.description + '</p>'))
+              .addTo(map);
+        
+        map.addControl(new mapboxgl.NavigationControl());
+          
+        </script>
+    </div>
+    
+    
+    <div class="col-9">
+        <div class="card">
+              <img class="img-fluid max-width: 50% height: auto" src="<%= breakfast.image %>">
+                <div class="card-body">
+                  <figcaption class="float-right">$ <%= breakfast.price %></figcaption>
+                    <h5 class="card-title"><%= breakfast.name %> by <%= breakfast.author.username %></h5>
+                    <p class="card-text"><%= breakfast.description %></p>
+                    
+                    <% if(currentUser && breakfast.author.id.equals(currentUser._id)) { %>
+                    
+                    <a href="/breakfasts/<%= breakfast._id %>/edit" class="btn btn-outline-warning btn-sm">Edit Post</a>
+                    <form class="deleteForm" action="/breakfasts/<%= breakfast._id %>?_method=DELETE" method="POST">
+                        <button class="btn btn-outline-danger btn-sm">Delete</button>
+                    </form>
+                    
+                    <% } %>
+                    
+                </div>
+        </div>
+        <hr>
+        <div>
+          <p class="px-2"><strong>Comments</strong> <a href="/breakfasts/<%= breakfast._id %>/comments/new" class="btn btn-outline-success btn-sm float-right">Leave comment  <i class="fas fa-utensils"></i></a>  
+          </p>
+        </div>
+        
+        <% breakfast.comments.forEach((comment) => { %>
+        
+        <div class="card">
+          <div class="card-header">
+                <strong><%= comment.author.username %></strong>
+                
+                    <% if(currentUser && comment.author.id.equals(currentUser._id)) { %>
+                    
+                        <form class="deleteForm" action="/breakfasts/<%= breakfast._id %>/comments/<%= comment._id%>?_method=DELETE" method="POST">
+                            <button id="deleteComment" class="btn btn-outline-danger btn-sm float-right">Delete</button>
+                        </form>
+                        <a href="/breakfasts/<%= breakfast._id %>/comments/<%= comment._id %>/edit" 
+                        class="btn btn-outline-warning btn-sm float-right">
+                        Edit</a>
+                        
+                    <% } %>
+                    
+          </div>
+          <div class="card-body">
+                  <p class="card-text"><%= comment.text %></p>
+          </div>
+        </div>
+        <br>
+        
+        <% }) %>
+
+    </div>
+  </div>
+</div>
+
+
+
+<% include ../partials/footer %>
